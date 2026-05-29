@@ -130,35 +130,35 @@
             }
         ];
 
-        // 화면에 데이터를 그려주는 자바스크립트 코드
-        const container = document.getElementById('plan-container');
+       <script>
+        // ... (앞서 작성한 데이터 코드 유지)
 
-        bibleReadingPlan.forEach(part => {
-            let partHtml = `<div class="part"><div class="part-title">${part.part_title}</div>`;
+        // 텍스트를 불러와 화면에 띄우는 함수
+        async function loadContent(bookTitle, chapter) {
+            const contentBox = document.getElementById('content-display');
+            contentBox.innerHTML = `<h3>${bookTitle} ${chapter}장 읽는 중...</h3><p>불러오는 중입니다...</p>`;
             
-            part.steps.forEach(step => {
-                partHtml += `<div class="step"><div class="step-num">${step.step_num}</div>`;
+            try {
+                // texts 폴더 안의 파일을 불러옵니다
+                const response = await fetch(`texts/${bookTitle}.txt`);
+                const text = await response.text();
                 
-                step.books.forEach(book => {
-                    partHtml += `<div class="book"><span class="book-title">📍 ${book.title}</span><div class="chapters">`;
-                    
-                    book.chapters.forEach(chapter => {
-                        partHtml += `<div class="chapter" onclick="toggleCheck(this)">${chapter}</div>`;
-                    });
-                    
-                    partHtml += `</div></div>`;
-                });
-                partHtml += `</div>`;
-            });
-            
-            partHtml += `</div>`;
-            container.innerHTML += partHtml;
-        });
-
-        // 체크박스 클릭 효과 함수
-        function toggleCheck(element) {
-            element.classList.toggle('checked');
+                // 특정 장(Chapter)의 내용만 추출하여 보여주는 로직 (파일 구조에 따라 수정 필요)
+                // 현재는 파일 전체를 보여주는 예시입니다.
+                contentBox.innerHTML = `<h3>${bookTitle} ${chapter}장</h3><pre>${text}</pre>`;
+            } catch (err) {
+                contentBox.innerHTML = "파일을 불러오지 못했습니다.";
+            }
         }
+
+        // 기존 toggleCheck 수정: 클릭 시 내용 불러오기 추가
+        function toggleCheck(element, bookTitle, chapter) {
+            element.classList.toggle('checked');
+            loadContent(bookTitle, chapter);
+        }
+
+        // 데이터 생성 부분에서 onclick 부분을 아래처럼 수정해야 합니다:
+        // onclick="toggleCheck(this, '${book.title}', ${chapter})"
     </script>
 </body>
 </html>
